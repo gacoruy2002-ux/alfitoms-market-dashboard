@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alfitoms</title>
+    <meta
+      name="description"
+      content="Market Dashboard by Alfitoms — Heatmap treemap TradingView dan Watchlist untuk Crypto, Saham Indonesia (IDX), dan Saham US."
+    />
+    <meta property="og:title" content="Alfitoms" />
+    <meta
+      property="og:description"
+      content="Market Dashboard by Alfitoms untuk Crypto, Saham Indonesia (IDX), dan Saham US."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg-canvas: #000000;
+        --bg-surface: #0b0f14;
+        --bg-surface-hover: #131a23;
+        --border-hairline: #1e2937;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --text-muted: #64748b;
+        --accent-green: #22c55e;
+        --accent-amber: #fbbf24;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-canvas);
+        color: var(--text-primary);
+        font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+
+      .app-shell {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      @media (min-width: 640px) {
+        .container {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+      }
+
+      /* Header */
+      .site-header {
+        border-bottom: 1px solid var(--border-hairline);
+        background-color: var(--bg-surface);
+      }
+
+      .header-inner {
+        padding-top: 16px;
+        padding-bottom: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .brand-title {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+        font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.1;
+        color: var(--accent-green);
+      }
+
+      .brand-tagline {
+        margin: 4px 0 0 0;
+        font-size: 0.8125rem;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Main */
+      .main-content {
+        flex: 1;
+        padding-top: 18px;
+        padding-bottom: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* Toolbar: Tabs + Asset Dropdown */
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .tablist {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px;
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-hairline);
+        border-radius: 10px;
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
+      .tab-btn {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--text-secondary);
+        font-family: "DM Sans", system-ui, sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1;
+        padding: 10px 14px;
+        border-radius: 7px;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-height: 40px;
+        transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+          color 150ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .tab-btn:hover {
+        color: var(--text-primary);
+        background-color: var(--bg-surface-hover);
+      }
+
+      .tab-btn[aria-selected="true"] {
+        background-color: var(--accent-green);
+        color: #052e16;
+        font-weight: 700;
+      }
+
+      .control-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn-control {
+        appearance: none;
+        height: 40px;
+        padding: 0 14px;
+        border-radius: 8px;
+        border: 1px solid var(--border-hairline);
+        background-color: var(--bg-surface);
+        color: var(--text-primary);
+        font-family: "DM Sans", system-ui, sans-serif;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: border-color 150ms ease, background-color 150ms ease;
+      }
+
+      .btn-control:hover {
+        background-color: var(--bg-surface-hover);
+        border-color: #334155;
+      }
+
+      .btn-control[aria-pressed="true"] {
+        border-color: rgba(251, 191, 36, 0.5);
+        background-color: rgba(251, 191, 36, 0.1);
+        color: #fde68a;
+      }
+
+      /* Dropdown */
+      .dropdown-wrap {
+        position: relative;
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 6px);
+        width: 310px;
+        background-color: var(--bg-surface);
+        border: 1px solid #334155;
+        border-radius: 10px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
+        z-index: 40;
+        overflow: hidden;
+        display: none;
+      }
+
+      .dropdown-menu.open {
+        display: block;
+      }
+
+      .dropdown-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border-hairline);
+        background-color: #070a0e;
+      }
+
+      .link-btn {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        font-family: inherit;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 2px 4px;
+      }
+
+      .link-btn.primary {
+        color: var(--accent-green);
+      }
+
+      .link-btn.muted {
+        color: var(--text-secondary);
+      }
+
+      .link-btn:hover {
+        text-decoration: underline;
+      }
+
+      .dropdown-list {
+        max-height: 280px;
+        overflow-y: auto;
+      }
+
+      .asset-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 14px;
+        border-bottom: 1px solid rgba(30, 41, 55, 0.55);
+      }
+
+      .asset-row:last-child {
+        border-bottom: 0;
+      }
+
+      .asset-row:hover {
+        background-color: var(--bg-surface-hover);
+      }
+
+      .asset-check-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .asset-check-label input {
+        accent-color: var(--accent-green);
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .asset-code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: block;
+      }
+
+      .asset-name {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+      }
+
+      .star-btn {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+
+      .star-btn:hover {
+        background-color: rgba(255, 255, 255, 0.06);
+        color: var(--accent-amber);
+      }
+
+      .star-btn.starred {
+        color: var(--accent-amber);
+      }
+
+      /* Watchlist strip */
+      .watchlist-panel {
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-hairline);
+        border-radius: 10px;
+        padding: 10px 14px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .watchlist-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-right: 4px;
+      }
+
+      .watchlist-empty {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      .watchlist-item {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--bg-canvas);
+        border: 1px solid var(--border-hairline);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .watchlist-jump {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--text-primary);
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.75rem;
+        padding: 5px 9px;
+        cursor: pointer;
+      }
+
+      .watchlist-jump:hover {
+        background-color: var(--bg-surface-hover);
+      }
+
+      .watchlist-remove {
+        appearance: none;
+        border: 0;
+        border-left: 1px solid var(--border-hairline);
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        padding: 5px 7px;
+        cursor: pointer;
+      }
+
+      .watchlist-remove:hover {
+        color: #ef4444;
+        background-color: var(--bg-surface-hover);
+      }
+
+      /* Category block & Treemap */
+      .category-block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .category-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .category-title {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: 0.01em;
+      }
+
+      .category-meta {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      .heatmap-frame {
+        width: 100%;
+        height: 540px;
+        background-color: #000000;
+        border: 1px solid var(--border-hairline);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .quotes-frame {
+        width: 100%;
+        height: 360px;
+        background-color: #000000;
+        border: 1px solid var(--border-hairline);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      @media (max-width: 639px) {
+        .heatmap-frame {
+          height: 440px;
+        }
+        .quotes-frame {
+          height: 340px;
+        }
+        .dropdown-menu {
+          left: 0;
+          right: auto;
+          width: min(310px, calc(100vw - 32px));
+        }
+      }
+
+      .widget-mount,
+      .tradingview-widget-container,
+      .tradingview-widget-container__widget {
+        width: 100%;
+        height: 100%;
+      }
+
+      .empty-selection {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      /* Footer */
+      .site-footer {
+        border-top: 1px solid var(--border-hairline);
+        background-color: var(--bg-surface);
+      }
+
+      .footer-inner {
+        padding-top: 16px;
+        padding-bottom: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      @media (min-width: 640px) {
+        .footer-inner {
+          flex-direction: row;
+        }
+      }
+
+      .footer-inner p {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <div class="container header-inner">
+          <div>
+            <h1 class="brand-title">Alfitoms</h1>
+            <p class="brand-tagline">Market Dashboard by Alfitoms</p>
+          </div>
+          <div class="header-actions">
+            <button
+              type="button"
+              id="watchlist-filter-btn"
+              class="btn-control"
+              aria-pressed="false"
+            >
+              <span>★</span>
+              <span id="watchlist-filter-label">Hanya Watchlist (0)</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="container main-content">
+        <div class="toolbar">
+          <div class="tablist" role="tablist" aria-label="Pilihan Pasar">
+            <button
+              type="button"
+              role="tab"
+              class="tab-btn"
+              data-market="crypto"
+              aria-selected="true"
+            >
+              Crypto
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="tab-btn"
+              data-market="idx"
+              aria-selected="false"
+            >
+              Saham Indonesia (IDX)
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="tab-btn"
+              data-market="us"
+              aria-selected="false"
+            >
+              Saham US
+            </button>
+          </div>
+
+          <div class="control-group">
+            <div class="dropdown-wrap" id="asset-dropdown-wrap">
+              <button
+                type="button"
+                id="asset-dropdown-btn"
+                class="btn-control"
+                aria-expanded="false"
+              >
+                <span id="asset-dropdown-count">Pilih Aset</span>
+                <span>▾</span>
+              </button>
+
+              <div class="dropdown-menu" id="asset-dropdown-menu">
+                <div class="dropdown-header">
+                  <button type="button" id="select-all-btn" class="link-btn primary">
+                    Pilih Semua
+                  </button>
+                  <button type="button" id="reset-default-btn" class="link-btn muted">
+                    Reset Default
+                  </button>
+                </div>
+                <div class="dropdown-list" id="asset-dropdown-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="watchlist-panel" aria-label="Watchlist Tersimpan">
+          <span class="watchlist-title">Watchlist:</span>
+          <div id="watchlist-items" style="display: contents"></div>
+        </section>
+
+        <!-- Treemap / Heatmap Block -->
+        <section class="category-block" aria-label="Treemap Heatmap Pasar">
+          <div class="category-header">
+            <h2 id="heatmap-category-title" class="category-title">Crypto</h2>
+            <span id="heatmap-category-meta" class="category-meta">
+              Heatmap TradingView
+            </span>
+          </div>
+          <div class="heatmap-frame">
+            <div id="tv-heatmap-mount" class="widget-mount"></div>
+          </div>
+        </section>
+
+        <!-- Selected Assets Quotes Block -->
+        <section class="category-block" aria-label="Daftar Aset Terpilih">
+          <div class="category-header">
+            <h2 id="quotes-category-title" class="category-title">
+              Aset Terpilih — Crypto
+            </h2>
+            <span id="quotes-category-meta" class="category-meta"></span>
+          </div>
+          <div class="quotes-frame">
+            <div id="tv-quotes-mount" class="widget-mount"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <p>Data dari TradingView. Data bisa delay. Bukan saran investasi.</p>
+          <p>© Alfitoms</p>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var WATCHLIST_KEY = "alfitoms_watchlist_v1";
+
+        var MARKETS = {
+          crypto: {
+            categoryTitle: "Crypto",
+            heatmapScript:
+              "https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js",
+            heatmapConfig: {
+              dataSource: "CryptoWithoutStable",
+              blockSize: "market_cap_calc",
+              blockColor: "24h_close_change|5",
+              locale: "id",
+              symbolUrl: "",
+              colorTheme: "dark",
+              hasTopBar: true,
+              isDataSetEnabled: false,
+              isZoomEnabled: true,
+              hasSymbolTooltip: true,
+              isMonoSize: false,
+              width: "100%",
+              height: "100%"
+            },
+            assets: [
+              { id: "BINANCE:BTCUSDT", symbol: "BTC", tvSymbol: "BINANCE:BTCUSDT", name: "Bitcoin", isDefault: true },
+              { id: "BINANCE:ETHUSDT", symbol: "ETH", tvSymbol: "BINANCE:ETHUSDT", name: "Ethereum", isDefault: true },
+              { id: "BINANCE:SOLUSDT", symbol: "SOL", tvSymbol: "BINANCE:SOLUSDT", name: "Solana", isDefault: true },
+              { id: "BINANCE:SUIUSDT", symbol: "SUI", tvSymbol: "BINANCE:SUIUSDT", name: "Sui", isDefault: true },
+              { id: "BINANCE:BNBUSDT", symbol: "BNB", tvSymbol: "BINANCE:BNBUSDT", name: "BNB", isDefault: true },
+              { id: "BINANCE:XRPUSDT", symbol: "XRP", tvSymbol: "BINANCE:XRPUSDT", name: "XRP", isDefault: true },
+              { id: "BINANCE:DOGEUSDT", symbol: "DOGE", tvSymbol: "BINANCE:DOGEUSDT", name: "Dogecoin", isDefault: true },
+              { id: "BINANCE:AVAXUSDT", symbol: "AVAX", tvSymbol: "BINANCE:AVAXUSDT", name: "Avalanche", isDefault: true },
+              { id: "BINANCE:LINKUSDT", symbol: "LINK", tvSymbol: "BINANCE:LINKUSDT", name: "Chainlink", isDefault: true },
+              { id: "BINANCE:TONUSDT", symbol: "TON", tvSymbol: "BINANCE:TONUSDT", name: "Toncoin", isDefault: true },
+              { id: "BINANCE:ARBUSDT", symbol: "ARB", tvSymbol: "BINANCE:ARBUSDT", name: "Arbitrum", isDefault: true },
+              { id: "BINANCE:DOTUSDT", symbol: "DOT", tvSymbol: "BINANCE:DOTUSDT", name: "Polkadot", isDefault: true }
+            ]
+          },
+          idx: {
+            categoryTitle: "Saham Indonesia",
+            heatmapScript:
+              "https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js",
+            heatmapConfig: {
+              exchanges: ["IDX"],
+              dataSource: "AllID",
+              grouping: "sector",
+              blockSize: "market_cap_basic",
+              blockColor: "change",
+              locale: "id",
+              symbolUrl: "",
+              colorTheme: "dark",
+              hasTopBar: true,
+              isDataSetEnabled: false,
+              isZoomEnabled: true,
+              hasSymbolTooltip: true,
+              isMonoSize: false,
+              width: "100%",
+              height: "100%"
+            },
+            assets: [
+              { id: "IDX:BBCA", symbol: "BBCA", tvSymbol: "IDX:BBCA", name: "Bank Central Asia", isDefault: true },
+              { id: "IDX:BBRI", symbol: "BBRI", tvSymbol: "IDX:BBRI", name: "Bank Rakyat Indonesia", isDefault: true },
+              { id: "IDX:BMRI", symbol: "BMRI", tvSymbol: "IDX:BMRI", name: "Bank Mandiri", isDefault: true },
+              { id: "IDX:TLKM", symbol: "TLKM", tvSymbol: "IDX:TLKM", name: "Telkom Indonesia", isDefault: true },
+              { id: "IDX:ASII", symbol: "ASII", tvSymbol: "IDX:ASII", name: "Astra International", isDefault: true },
+              { id: "IDX:GOTO", symbol: "GOTO", tvSymbol: "IDX:GOTO", name: "GoTo Gojek Tokopedia", isDefault: true },
+              { id: "IDX:ADRO", symbol: "ADRO", tvSymbol: "IDX:ADRO", name: "Alamtri Resources", isDefault: true },
+              { id: "IDX:BBNI", symbol: "BBNI", tvSymbol: "IDX:BBNI", name: "Bank Negara Indonesia", isDefault: false },
+              { id: "IDX:AMMN", symbol: "AMMN", tvSymbol: "IDX:AMMN", name: "Amman Mineral", isDefault: false },
+              { id: "IDX:ICBP", symbol: "ICBP", tvSymbol: "IDX:ICBP", name: "Indofood CBP", isDefault: false }
+            ]
+          },
+          us: {
+            categoryTitle: "Saham US",
+            heatmapScript:
+              "https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js",
+            heatmapConfig: {
+              exchanges: ["NASDAQ", "NYSE"],
+              dataSource: "SPX500",
+              grouping: "sector",
+              blockSize: "market_cap_basic",
+              blockColor: "change",
+              locale: "id",
+              symbolUrl: "",
+              colorTheme: "dark",
+              hasTopBar: true,
+              isDataSetEnabled: false,
+              isZoomEnabled: true,
+              hasSymbolTooltip: true,
+              isMonoSize: false,
+              width: "100%",
+              height: "100%"
+            },
+            assets: [
+              { id: "NASDAQ:AAPL", symbol: "AAPL", tvSymbol: "NASDAQ:AAPL", name: "Apple Inc.", isDefault: true },
+              { id: "NASDAQ:MSFT", symbol: "MSFT", tvSymbol: "NASDAQ:MSFT", name: "Microsoft", isDefault: true },
+              { id: "NASDAQ:NVDA", symbol: "NVDA", tvSymbol: "NASDAQ:NVDA", name: "NVIDIA", isDefault: true },
+              { id: "NASDAQ:AMZN", symbol: "AMZN", tvSymbol: "NASDAQ:AMZN", name: "Amazon", isDefault: true },
+              { id: "NASDAQ:GOOGL", symbol: "GOOGL", tvSymbol: "NASDAQ:GOOGL", name: "Alphabet", isDefault: true },
+              { id: "NASDAQ:TSLA", symbol: "TSLA", tvSymbol: "NASDAQ:TSLA", name: "Tesla", isDefault: true },
+              { id: "NASDAQ:AMD", symbol: "AMD", tvSymbol: "NASDAQ:AMD", name: "AMD", isDefault: true },
+              { id: "NASDAQ:AVGO", symbol: "AVGO", tvSymbol: "NASDAQ:AVGO", name: "Broadcom", isDefault: true },
+              { id: "NASDAQ:META", symbol: "META", tvSymbol: "NASDAQ:META", name: "Meta Platforms", isDefault: false },
+              { id: "NASDAQ:NFLX", symbol: "NFLX", tvSymbol: "NASDAQ:NFLX", name: "Netflix", isDefault: false },
+              { id: "NYSE:JPM", symbol: "JPM", tvSymbol: "NYSE:JPM", name: "JPMorgan Chase", isDefault: false },
+              { id: "NYSE:V", symbol: "V", tvSymbol: "NYSE:V", name: "Visa Inc.", isDefault: false }
+            ]
+          }
+        };
+
+        function getDefaultIds(marketKey) {
+          return MARKETS[marketKey].assets
+            .filter(function (a) {
+              return a.isDefault;
+            })
+            .map(function (a) {
+              return a.id;
+            });
+        }
+
+        function loadWatchlist() {
+          try {
+            var raw = localStorage.getItem(WATCHLIST_KEY);
+            if (!raw) return [];
+            var parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) return [];
+            // Pastikan hanya entri untuk crypto, idx, us (tanpa KRX)
+            var cleaned = parsed.filter(function (item) {
+              return (
+                item &&
+                typeof item.id === "string" &&
+                (item.market === "crypto" || item.market === "idx" || item.market === "us")
+              );
+            });
+            localStorage.setItem(WATCHLIST_KEY, JSON.stringify(cleaned));
+            return cleaned;
+          } catch (e) {
+            return [];
+          }
+        }
+
+        function saveWatchlist(list) {
+          try {
+            localStorage.setItem(WATCHLIST_KEY, JSON.stringify(list));
+          } catch (e) {}
+        }
+
+        var state = {
+          activeMarket: "crypto",
+          onlyWatchlist: false,
+          selectedIds: {
+            crypto: getDefaultIds("crypto"),
+            idx: getDefaultIds("idx"),
+            us: getDefaultIds("us")
+          },
+          watchlist: loadWatchlist()
+        };
+
+        var tabButtons = document.querySelectorAll(".tab-btn");
+        var dropdownWrap = document.getElementById("asset-dropdown-wrap");
+        var dropdownBtn = document.getElementById("asset-dropdown-btn");
+        var dropdownMenu = document.getElementById("asset-dropdown-menu");
+        var dropdownCount = document.getElementById("asset-dropdown-count");
+        var dropdownList = document.getElementById("asset-dropdown-list");
+        var selectAllBtn = document.getElementById("select-all-btn");
+        var resetDefaultBtn = document.getElementById("reset-default-btn");
+        var watchlistFilterBtn = document.getElementById("watchlist-filter-btn");
+        var watchlistFilterLabel = document.getElementById("watchlist-filter-label");
+        var watchlistItemsEl = document.getElementById("watchlist-items");
+        var heatmapTitleEl = document.getElementById("heatmap-category-title");
+        var heatmapMetaEl = document.getElementById("heatmap-category-meta");
+        var quotesTitleEl = document.getElementById("quotes-category-title");
+        var quotesMetaEl = document.getElementById("quotes-category-meta");
+        var heatmapMount = document.getElementById("tv-heatmap-mount");
+        var quotesMount = document.getElementById("tv-quotes-mount");
+
+        function isInWatchlist(id) {
+          return state.watchlist.some(function (entry) {
+            return entry.id === id;
+          });
+        }
+
+        function toggleWatchlistItem(asset, marketKey) {
+          if (isInWatchlist(asset.id)) {
+            state.watchlist = state.watchlist.filter(function (entry) {
+              return entry.id !== asset.id;
+            });
+          } else {
+            state.watchlist = state.watchlist.concat([
+              {
+                id: asset.id,
+                symbol: asset.symbol,
+                tvSymbol: asset.tvSymbol,
+                name: asset.name,
+                market: marketKey
+              }
+            ]);
+          }
+          saveWatchlist(state.watchlist);
+          renderWatchlistUI();
+          renderAssetDropdown();
+          if (state.onlyWatchlist) {
+            renderQuotesWidget();
+          }
+        }
+
+        function clearElement(el) {
+          while (el && el.firstChild) {
+            el.removeChild(el.firstChild);
+          }
+        }
+
+        function mountTradingViewScript(targetEl, scriptUrl, configObj) {
+          clearElement(targetEl);
+          var container = document.createElement("div");
+          container.className = "tradingview-widget-container";
+
+          var slot = document.createElement("div");
+          slot.className = "tradingview-widget-container__widget";
+          container.appendChild(slot);
+
+          var script = document.createElement("script");
+          script.type = "text/javascript";
+          script.src = scriptUrl;
+          script.async = true;
+          script.textContent = JSON.stringify(configObj);
+          container.appendChild(script);
+
+          targetEl.appendChild(container);
+        }
+
+        function renderHeatmapWidget() {
+          var market = MARKETS[state.activeMarket];
+          if (!market) return;
+
+          heatmapTitleEl.textContent = market.categoryTitle;
+          heatmapMetaEl.textContent =
+            state.activeMarket === "crypto"
+              ? "Crypto Market Heatmap · TradingView"
+              : state.activeMarket === "idx"
+                ? "Stock Heatmap IDX · TradingView"
+                : "Stock Heatmap SPX500 (NASDAQ & NYSE) · TradingView";
+
+          mountTradingViewScript(heatmapMount, market.heatmapScript, market.heatmapConfig);
+        }
+
+        function getActiveSelectedAssets() {
+          var market = MARKETS[state.activeMarket];
+          var chosen = state.selectedIds[state.activeMarket];
+          return market.assets.filter(function (asset) {
+            if (chosen.indexOf(asset.id) === -1) return false;
+            if (state.onlyWatchlist && !isInWatchlist(asset.id)) return false;
+            return true;
+          });
+        }
+
+        function renderQuotesWidget() {
+          var market = MARKETS[state.activeMarket];
+          var activeAssets = getActiveSelectedAssets();
+
+          quotesTitleEl.textContent = "Aset Terpilih — " + market.categoryTitle;
+          quotesMetaEl.textContent = activeAssets.length + " aset ditampilkan";
+
+          if (activeAssets.length === 0) {
+            clearElement(quotesMount);
+            var empty = document.createElement("div");
+            empty.className = "empty-selection";
+            empty.textContent = state.onlyWatchlist
+              ? "Tidak ada aset Watchlist yang dipilih di tab " + market.categoryTitle + "."
+              : "Pilih minimal satu aset pada menu Pilih Aset untuk menampilkan data pasar.";
+            quotesMount.appendChild(empty);
+            return;
+          }
+
+          mountTradingViewScript(
+            quotesMount,
+            "https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js",
+            {
+              width: "100%",
+              height: "100%",
+              symbolsGroups: [
+                {
+                  name: market.categoryTitle,
+                  originalName: market.categoryTitle,
+                  symbols: activeAssets.map(function (asset) {
+                    return {
+                      name: asset.tvSymbol,
+                      displayName: asset.symbol + " — " + asset.name
+                    };
+                  })
+                }
+              ],
+              showSymbolLogo: true,
+              isTransparent: false,
+              colorTheme: "dark",
+              backgroundColor: "#000000",
+              locale: "id"
+            }
+          );
+        }
+
+        function renderAssetDropdown() {
+          var market = MARKETS[state.activeMarket];
+          var chosen = state.selectedIds[state.activeMarket];
+          dropdownCount.textContent =
+            "Pilih Aset (" + chosen.length + "/" + market.assets.length + ")";
+
+          clearElement(dropdownList);
+
+          market.assets.forEach(function (asset) {
+            var row = document.createElement("div");
+            row.className = "asset-row";
+
+            var label = document.createElement("label");
+            label.className = "asset-check-label";
+
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = chosen.indexOf(asset.id) !== -1;
+            checkbox.addEventListener("change", function () {
+              var current = state.selectedIds[state.activeMarket];
+              if (checkbox.checked) {
+                if (current.indexOf(asset.id) === -1) {
+                  state.selectedIds[state.activeMarket] = current.concat([asset.id]);
+                }
+              } else {
+                state.selectedIds[state.activeMarket] = current.filter(function (id) {
+                  return id !== asset.id;
+                });
+              }
+              renderAssetDropdown();
+              renderQuotesWidget();
+            });
+
+            var textWrap = document.createElement("span");
+            textWrap.style.minWidth = "0";
+
+            var codeEl = document.createElement("span");
+            codeEl.className = "asset-code";
+            codeEl.textContent = asset.symbol + " (" + asset.tvSymbol + ")";
+
+            var nameEl = document.createElement("span");
+            nameEl.className = "asset-name";
+            nameEl.textContent = asset.name;
+
+            textWrap.appendChild(codeEl);
+            textWrap.appendChild(nameEl);
+            label.appendChild(checkbox);
+            label.appendChild(textWrap);
+
+            var starBtn = document.createElement("button");
+            starBtn.type = "button";
+            var starred = isInWatchlist(asset.id);
+            starBtn.className = "star-btn" + (starred ? " starred" : "");
+            starBtn.textContent = starred ? "★" : "☆";
+            starBtn.setAttribute(
+              "aria-label",
+              starred
+                ? "Hapus " + asset.symbol + " dari Watchlist"
+                : "Simpan " + asset.symbol + " ke Watchlist"
+            );
+            starBtn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              toggleWatchlistItem(asset, state.activeMarket);
+            });
+
+            row.appendChild(label);
+            row.appendChild(starBtn);
+            dropdownList.appendChild(row);
+          });
+        }
+
+        function renderWatchlistUI() {
+          watchlistFilterLabel.textContent =
+            "Hanya Watchlist (" + state.watchlist.length + ")";
+          watchlistFilterBtn.setAttribute(
+            "aria-pressed",
+            state.onlyWatchlist ? "true" : "false"
+          );
+
+          clearElement(watchlistItemsEl);
+
+          if (state.watchlist.length === 0) {
+            var empty = document.createElement("span");
+            empty.className = "watchlist-empty";
+            empty.textContent =
+              "Belum ada aset tersimpan. Klik ikon ☆ di menu Pilih Aset.";
+            watchlistItemsEl.appendChild(empty);
+            return;
+          }
+
+          state.watchlist.forEach(function (entry) {
+            var chip = document.createElement("div");
+            chip.className = "watchlist-item";
+
+            var jumpBtn = document.createElement("button");
+            jumpBtn.type = "button";
+            jumpBtn.className = "watchlist-jump";
+            jumpBtn.textContent = entry.symbol + " · " + MARKETS[entry.market].categoryTitle;
+            jumpBtn.addEventListener("click", function () {
+              if (state.selectedIds[entry.market].indexOf(entry.id) === -1) {
+                state.selectedIds[entry.market].push(entry.id);
+              }
+              setActiveTab(entry.market);
+            });
+
+            var removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "watchlist-remove";
+            removeBtn.textContent = "✕";
+            removeBtn.setAttribute("aria-label", "Hapus " + entry.symbol);
+            removeBtn.addEventListener("click", function () {
+              state.watchlist = state.watchlist.filter(function (item) {
+                return item.id !== entry.id;
+              });
+              saveWatchlist(state.watchlist);
+              renderWatchlistUI();
+              renderAssetDropdown();
+              if (state.onlyWatchlist) {
+                renderQuotesWidget();
+              }
+            });
+
+            chip.appendChild(jumpBtn);
+            chip.appendChild(removeBtn);
+            watchlistItemsEl.appendChild(chip);
+          });
+        }
+
+        function setActiveTab(marketKey) {
+          if (!MARKETS[marketKey]) return;
+          state.activeMarket = marketKey;
+          for (var i = 0; i < tabButtons.length; i++) {
+            var btn = tabButtons[i];
+            btn.setAttribute(
+              "aria-selected",
+              btn.getAttribute("data-market") === marketKey ? "true" : "false"
+            );
+          }
+          renderAssetDropdown();
+          renderHeatmapWidget();
+          renderQuotesWidget();
+        }
+
+        for (var i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].addEventListener("click", function () {
+            var target = this.getAttribute("data-market");
+            if (target && target !== state.activeMarket) {
+              setActiveTab(target);
+            }
+          });
+        }
+
+        dropdownBtn.addEventListener("click", function () {
+          var isOpen = dropdownMenu.classList.toggle("open");
+          dropdownBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+
+        document.addEventListener("click", function (e) {
+          if (dropdownWrap && !dropdownWrap.contains(e.target)) {
+            dropdownMenu.classList.remove("open");
+            dropdownBtn.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        selectAllBtn.addEventListener("click", function () {
+          state.selectedIds[state.activeMarket] = MARKETS[state.activeMarket].assets.map(
+            function (a) {
+              return a.id;
+            }
+          );
+          renderAssetDropdown();
+          renderQuotesWidget();
+        });
+
+        resetDefaultBtn.addEventListener("click", function () {
+          state.selectedIds[state.activeMarket] = getDefaultIds(state.activeMarket);
+          renderAssetDropdown();
+          renderQuotesWidget();
+        });
+
+        watchlistFilterBtn.addEventListener("click", function () {
+          state.onlyWatchlist = !state.onlyWatchlist;
+          renderWatchlistUI();
+          renderQuotesWidget();
+        });
+
+        renderWatchlistUI();
+        setActiveTab("crypto");
+      })();
+    </script>
+  </body>
+</html>

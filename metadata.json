@@ -1,0 +1,6 @@
+{
+  "name": "Alfitoms",
+  "description": "Market Dashboard by Alfitoms — Heatmap pasar interaktif, tabel harga, watchlist, dan grafik historis untuk Crypto, Saham Indonesia (IDX), dan Saham US.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
